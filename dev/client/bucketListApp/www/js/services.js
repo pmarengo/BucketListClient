@@ -1,6 +1,6 @@
-angular.module('bucketList.services', [])
-    .factory('API', function ($rootScope, $http, $ionicLoading, $window) {
-       var base = "http://172.16.6.14:9804";
+angular.module('bucketList.services', ['bucketList.mqtt'])
+    .factory('API', function ($rootScope, $http, $ionicLoading, $window, Socket) {
+        var base = "http://172.16.6.14:9804";
         $rootScope.show = function (text) {
             $rootScope.loading = $ionicLoading.show({
                 content: text ? text : 'Loading',
@@ -46,13 +46,14 @@ angular.module('bucketList.services', [])
 
         return {
             signin: function (form) {
+            	Socket.connect('broker.hivemq.com', '1883');
                 return $http.post(base+'/api/v1/bucketList/auth/login', form);
             },
             signup: function (form) {
                 return $http.post(base+'/api/v1/bucketList/auth/register', form);
             },
             getAll: function (email) {
-                return $http.get(base+'/api/v1/bucketList/data/list', {
+            	return $http.get(base+'/api/v1/bucketList/data/list', {
                     method: 'GET',
                     params: {
                         token: email
@@ -75,14 +76,17 @@ angular.module('bucketList.services', [])
                     }
                 });
             },
-            putItem: function (id, form, email) {
-                return $http.put(base+'/api/v1/bucketList/data/item/' + id, form, {
-                    method: 'PUT',
-                    params: {
-                        token: email
-                    }
-                });
+            putItem: function (payload) {
+                return Socket.publish('Client/BucketList/Data/Item/PUT',payload);
             },
+//            putItem: function (id, form, email) {
+//                return $http.put(base+'/api/v1/bucketList/data/item/' + id, form, {
+//                    method: 'PUT',
+//                    params: {
+//                        token: email
+//                    }
+//                });
+//            },
             deleteItem: function (id, email) {
                 return $http.delete(base+'/api/v1/bucketList/data/item/' + id, {
                     method: 'DELETE',

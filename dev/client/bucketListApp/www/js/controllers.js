@@ -111,12 +111,26 @@ angular.module('bucketList.controllers', ['bucketList.services'])
 
     $rootScope.$broadcast('fetchAll');
 
+//    $scope.markCompleted = function (id) {
+//        $rootScope.show("Please wait... Updating List");
+//        API.putItem(id, {
+//            isCompleted: true
+//        }, $rootScope.getToken())
+//            .success(function (data, status, headers, config) {
+//                $rootScope.loading.hide();
+//                $rootScope.doRefresh(1);
+//            }).error(function (data, status, headers, config) {
+//                $rootScope.loading.hide();
+//                $rootScope.notify("Oops something went wrong!! Please try again later");
+//            });
+//    };
+    
     $scope.markCompleted = function (id) {
         $rootScope.show("Please wait... Updating List");
-        API.putItem(id, {
+        API.putItem({
+        	id: id,
             isCompleted: true
-        }, $rootScope.getToken())
-            .success(function (data, status, headers, config) {
+        }).success(function (data, status, headers, config) {
                 $rootScope.loading.hide();
                 $rootScope.doRefresh(1);
             }).error(function (data, status, headers, config) {

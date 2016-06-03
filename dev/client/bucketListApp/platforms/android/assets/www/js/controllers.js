@@ -25,8 +25,7 @@ angular.module('bucketList.controllers', ['bucketList.services'])
         }).success(function (data) {
             $rootScope.setToken(email); // create a session kind of thing on the client side
             $rootScope.loading.hide();
-			//$rootScope.hide();
-            $window.location.href = ('#/bucket/list');
+			$window.location.href = ('#/bucket/list');
         }).error(function (error) {
             $rootScope.hide();
             $rootScope.notify("Invalid Username or password");
@@ -76,37 +75,36 @@ angular.module('bucketList.controllers', ['bucketList.services'])
 
 .controller('myListCtrl', function ($rootScope, $scope, API, $timeout, $ionicModal, $window) {
     $rootScope.$on('fetchAll', function(){
-            API.getAll($rootScope.getToken()).success(function (data, status, headers, config) {
-            $rootScope.show("Please wait... Processing");
-            $scope.list = [];
-            for (var i = 0; i < data.length; i++) {
-                if (data[i].isCompleted == false) {
-                    $scope.list.push(data[i]);
-                }
-            };
-            if($scope.list.length == 0)
-            {
-                $scope.noData = true;
-            }
-            else
-            {
-                $scope.noData = false;
-            }
-
-            $ionicModal.fromTemplateUrl('templates/newItem.html', function (modal) {
-                $scope.newTemplate = modal;
-            });
-
-            $scope.newTask = function () {
-                $scope.newTemplate.show();
-            };
-			$rootScope.loading.hide();
-            //$rootScope.hide();
-        }).error(function (data, status, headers, config) {
-			$rootScope.loading.hide();
-			//$rootScope.loading.hide();
-            $rootScope.notify("Oops something went wrong!! Please try again later");
-        });
+            API.getAll($rootScope.getToken()
+            ).success(function (data, status, headers, config) {
+	            $rootScope.show("Please wait... Processing");
+	            $scope.list = [];
+	            for (var i = 0; i < data.length; i++) {
+	                if (data[i].isCompleted == false) {
+	                    $scope.list.push(data[i]);
+	                }
+	            };
+	            if($scope.list.length == 0)
+	            {
+	                $scope.noData = true;
+	            }
+	            else
+	            {
+	                $scope.noData = false;
+	            }
+	
+	            $ionicModal.fromTemplateUrl('templates/newItem.html', function (modal) {
+	                $scope.newTemplate = modal;
+	            });
+	
+	            $scope.newTask = function () {
+	                $scope.newTemplate.show();
+	            };
+				$rootScope.loading.hide();
+	        }).error(function (data, status, headers, config) {
+				$rootScope.loading.hide();
+		        $rootScope.notify("Oops something went wrong!! Please try again later");
+	        });
     });
 
     $rootScope.$broadcast('fetchAll');
@@ -124,7 +122,6 @@ angular.module('bucketList.controllers', ['bucketList.services'])
                 $rootScope.notify("Oops something went wrong!! Please try again later");
             });
     };
-
 
 
     $scope.deleteItem = function (id) {
